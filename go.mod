@@ -1,4 +1,4 @@
-module github.com/hanzala211/dev-env
+module github.com/hanzala211/dev-env-cli
 
 go 1.24.3
 
