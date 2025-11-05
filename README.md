@@ -20,7 +20,7 @@ A small Go CLI for managing local development projects (start/stop/list) using a
 ```bash
 go build -o dev-env-cli
 # Optionally install to GOPATH/bin
-go install ./...
+go install github.com/hanzala211/dev-env-cli@latest
 ```
 
 Add the binary to your PATH if needed.
