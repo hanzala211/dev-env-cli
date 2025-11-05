@@ -53,12 +53,12 @@ var addCmd = &cobra.Command{
 			Cmd: cmdFlag,
 			Path: pathFlag,
 		}
-		if !fileExists(filepath.Join(home, "/dev-env")) {
+		if !fileExists(filepath.Join(home, "/dev-env-cli")) {
 			if err := exec.Command("go", "run", ".", "init").Run(); err != nil {
 				log.Fatal(err)
 			}
 		}
-		projectsJson, err := os.ReadFile(filepath.Join(home, "/dev-env/projects.json"))
+		projectsJson, err := os.ReadFile(filepath.Join(home, "/dev-env-cli/projects.json"))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -78,7 +78,7 @@ var addCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		os.WriteFile(filepath.Join(home, "/dev-env/projects.json"), projectsBytes, 0644)
+		os.WriteFile(filepath.Join(home, "/dev-env-cli/projects.json"), projectsBytes, 0644)
 		fmt.Printf("Project %s added successfully\n", name)
 	},
 }

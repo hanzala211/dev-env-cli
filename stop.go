@@ -29,10 +29,10 @@ var stopCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		if !fileExists(filepath.Join(home, "/dev-env")) {
-			log.Fatal("dev-env not initialized, run 'dev-env init' to initialize")
+		if !fileExists(filepath.Join(home, "/dev-env-cli")) {
+			log.Fatal("dev-env-cli not initialized, run 'dev-env-cli init' to initialize")
 		}
-		statsJson, err := os.ReadFile(filepath.Join(home, "/dev-env/stats.json"))
+		statsJson, err := os.ReadFile(filepath.Join(home, "/dev-env-cli/stats.json"))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -41,7 +41,7 @@ var stopCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		projectsJson, err := os.ReadFile(filepath.Join(home, "/dev-env/projects.json"))
+		projectsJson, err := os.ReadFile(filepath.Join(home, "/dev-env-cli/projects.json"))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -76,7 +76,7 @@ var stopCmd = &cobra.Command{
 				if err != nil {
 					log.Fatal(err)
 				}
-				os.WriteFile(filepath.Join(home, "/dev-env/stats.json"), statsBytes, 0644)
+				os.WriteFile(filepath.Join(home, "/dev-env-cli/stats.json"), statsBytes, 0644)
 				fmt.Printf("Successfully stopped '%s'\n", projectName)
 				return
 			}

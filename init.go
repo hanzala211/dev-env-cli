@@ -22,16 +22,16 @@ var initCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		home, err := os.UserHomeDir()
 
-		if fileExists(filepath.Join(home, "/dev-env")) {
-			log.Fatal("dev-env already initialized")
+		if fileExists(filepath.Join(home, "/dev-env-cli")) {
+			log.Fatal("dev-env-cli already initialized")
 		}
 		if err != nil {
 			log.Fatal(err)
 		}
-		os.MkdirAll(filepath.Join(home, "/dev-env"), 0755)
-		os.WriteFile(filepath.Join(home, "/dev-env/projects.json"), []byte("[]"), 0644)
-		os.WriteFile(filepath.Join(home, "/dev-env/stats.json"), []byte("{}"), 0644)
-		fmt.Printf("Initialized dev-env in %s\n", filepath.Join(home, "/dev-env"))
+		os.MkdirAll(filepath.Join(home, "/dev-env-cli"), 0755)
+		os.WriteFile(filepath.Join(home, "/dev-env-cli/projects.json"), []byte("[]"), 0644)
+		os.WriteFile(filepath.Join(home, "/dev-env-cli/stats.json"), []byte("{}"), 0644)
+		fmt.Printf("Initialized dev-env-cli in %s\n", filepath.Join(home, "/dev-env-cli"))
 	},
 }
 
