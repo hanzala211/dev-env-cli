@@ -9,11 +9,13 @@ A small Go CLI for managing local development projects (start/stop/list) using a
 - Start commands as detached processes and store their PIDs in stats.json
 - Stop running projects by name
 - List projects and show RUNNING/STOPPED state
+- Lightweight dashboard (web UI) with start/stop controls (embedded via go:embed)
 
 ### Requirements
 
 - Go 1.20+
 - Windows is the primary target (detached process flags in `start` use Windows APIs). Other platforms may require adjustments.
+- Node.js 18+ (only if you want to build the dashboard web UI)
 
 ### Install
 
@@ -24,6 +26,15 @@ go install github.com/hanzala211/dev-env-cli@latest
 ```
 
 Add the binary to your PATH if needed.
+
+If you plan to use the dashboard, build the front-end once to generate static assets:
+
+```bash
+cd web
+npm install
+npm run build
+# This produces web/dist which will be embedded into the binary and served from memory
+```
 
 ### Quick Start
 
@@ -42,6 +53,10 @@ dev-env-cli start <project-name>
 
 # 5) Stop a project
 dev-env-cli stop <project-name>
+
+# 6) Launch the dashboard (optional web UI)
+dev-env-cli dashboard
+# Open http://localhost:8080 in your browser
 ```
 
 ### Data files
@@ -185,6 +200,39 @@ dev-env-cli stop web
 Successfully stopped 'web'
 ```
 
+#### dashboard
+
+- File: `dashboard.go`
+- Type: `*cobra.Command` (subcommand)
+- Use: `dev-env-cli dashboard`
+- Behavior:
+  - Starts a local HTTP server on `http://localhost:8080`
+- Serves the embedded dashboard SPA (via go:embed)
+  - Exposes REST API endpoints under `/api` to list/start/stop projects
+  - Requires `dev-env-cli` to be on your PATH (server shells out to `dev-env-cli start|stop`)
+- Example:
+
+```bash
+dev-env-cli dashboard
+# Then open http://localhost:8080
+```
+
+API endpoints (served by the dashboard server):
+
+- `GET /api/projects` → `{ projects: Array<{ name, cmd, path, running }> }`
+- `POST /api/projects/start` → body: `{ "name": "<project>" }`
+- `POST /api/projects/stop` → body: `{ "name": "<project>" }`
+
+Examples:
+
+```bash
+curl http://localhost:8080/api/projects
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"name":"web"}' http://localhost:8080/api/projects/start
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"name":"web"}' http://localhost:8080/api/projects/stop
+```
+
 ---
 
 ### Project Structure (files of interest)
@@ -196,3 +244,14 @@ Successfully stopped 'web'
 - `list.go`: Implements `list` command and `--name` flag
 - `start.go`: Implements `start` command (Windows detached process)
 - `stop.go`: Implements `stop` command (taskkill on Windows, Kill() elsewhere)
+- `dashboard.go`: CLI command that starts the dashboard server on port 8080
+- `server/server.go`: HTTP server that serves `web/dist` and `/api` routes
+
+---
+
+### Dashboard UI (front-end)
+
+- Location: `web/`
+- Build: `npm install && npm run build` to generate `web/dist`
+- SPA assets are embedded via go:embed and served from memory
+- The UI lists projects and lets you start/stop them via the API
